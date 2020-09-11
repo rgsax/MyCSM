@@ -1,0 +1,706 @@
+<!--
+	=========================================================
+	MyCSM Dashboard 
+	=========================================================
+	
+	Copyright 2020 
+	Coded by Riccardo Giordano & Simone Caggese
+	
+	=========================================================
+	 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. 
+	-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>
+			CSP Dashboard
+		</title>
+		<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+		<!--     Fonts and icons     -->
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+		<link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+		<!-- CSS Files -->
+		<link href="../static/css/dashboard.min.css" rel="stylesheet" />
+	</head>
+	<body class="">
+		<div class="wrapper ">
+			<div class="sidebar" data-color="azure" data-background-color="white">
+				<!--
+					Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+					
+					Tip 2: you can also add an image using data-image tag
+					-->
+				<div class="logo"><a href="{{ url_for('.home') }}"><img src="../static/img/logo1.png"  alt="" width="200" height="50"></a></div>
+				<div class="sidebar-wrapper">
+					<ul class="nav">
+						<li class="nav-item  ">
+							<a class="nav-link" style="cursor:pointer" href="{{ url_for('.home') }}">
+								<i class="material-icons">dashboard</i>
+								<p>Dashboard</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('.user_info') }}">
+								<i class="material-icons">person</i>
+								<p>User Profile</p>
+							</a>
+						</li>
+						{% for cloud_id, cloud_name in user_csps %}
+						<li class="nav-item" id='{{cloud_name}}'>
+							<a class="nav-link"  style="cursor:pointer" onclick="window.location.href='/csp/{{cloud_name}}'">
+								<i class="material-icons">leaderboard</i>
+								<p>{{cloud_name}}</p>
+							</a>
+						</li>
+						{% endfor %}
+						<li class="nav-item active-pro ">
+							<a class="nav-link" style="cursor:pointer" data-toggle="modal" data-target="#UpModal">
+								<i class="material-icons">unarchive</i>
+								<p>Upgrade to PRO</p>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="main-panel">
+				<!-- Navbar -->
+				<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+					<div class="container-fluid">
+						<div class="navbar-wrapper">
+							<a class="navbar-brand" href="{{ url_for('.home') }}">Go Back To Dashboard</a>
+						</div>
+						<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="navbar-toggler-icon icon-bar"></span>
+						<span class="navbar-toggler-icon icon-bar"></span>
+						<span class="navbar-toggler-icon icon-bar"></span>
+						</button>
+						<div class="collapse navbar-collapse justify-content-end">
+							<ul class="navbar-nav">
+								<li class="nav-item">
+									<a class="nav-link" href="{{ url_for('.home') }}">
+										<i class="material-icons">dashboard</i>
+										<p class="d-lg-none d-md-block">
+											Stats
+										</p>
+									</a>
+								</li>
+								{% if user.plan_id==1 %}
+								<!-- Free -->
+								<button class="btn btn-outline-danger" data-toggle="modal" data-target="#UpModal">
+								<span class="mr-2 d-none d-lg-inline text-green-600 small">Free</span>
+								<i class="fa fa-star-half" aria-hidden="true"></i>
+								</button>      
+								{% else %}
+								<!-- Premium -->
+								<button class="btn btn-outline-success" data-toggle="modal" data-target="#UpModal">
+								<span class="mr-2 d-none d-lg-inline text-green-600 small">Premium </span>
+								<i class="fa fa-star" aria-hidden="true"></i>
+								</button>
+								{% endif %}
+								<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<span class="navbar-text white-text"> <i class="fa fa-user " aria-hidden="true"></i> {{user.username}}</span>
+								</a>
+								<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+									<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+									<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+									Logout
+									</a>
+								</div>
+							</ul>
+						</div>
+					</div>
+				</nav>
+				<!-- End Navbar -->
+				<div class="content">
+					<div class="row">
+						<div class="card">
+							<div class="card-header card-header-tabs card-header-primary">
+								<div class="nav-tabs-navigation">
+									<div class="nav-tabs-wrapper">
+										<span class="nav-tabs-title">Instances:</span>
+										<ul class="nav nav-tabs" data-tabs="tabs">
+											<li class="nav-item">
+												<a class="nav-link active" href="#vms" data-toggle="tab">
+													<i class="material-icons">cloud</i> VMs
+													<div class="ripple-container"></div>
+												</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#databases" data-toggle="tab">
+													<i class="material-icons">memory</i> Database
+													<div class="ripple-container"></div>
+												</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#mailserver" data-toggle="tab">
+													<i class="material-icons">local_post_office</i> Mail Server
+													<div class="ripple-container"></div>
+												</a>
+											</li>
+											{% if user.get_plan().id == 2 %}
+											<li class="nav-item ml-auto" style="background-color: hsla(0,0%,100%,.2); cursor:pointer">
+												<a class="nav-link" data-toggle="modal" data-target="#addModal" >
+													<i class="material-icons">add</i> Add a new Instance
+													<div class="ripple-container"></div>
+												</a>
+											</li>
+											{% endif %}
+										</ul>
+										
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="tab-content">
+									<div class="tab-pane active" id="vms">
+										<table class="table">
+											<tbody id="vms_tbody">
+												<!-- vms cards -->
+											</tbody>
+										</table>
+									</div>
+									<div class="tab-pane" id="databases">
+										<table class="table">
+											<tbody id="dbs_tbody">
+												<!-- db cards -->
+											</tbody>
+										</table>
+									</div>
+									<div class="tab-pane" id="mailserver">
+										<table class="table">
+											<tbody id="mails_tbody">
+												<!-- mailserver cards -->
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<footer class="footer">
+					<div class="container-fluid">
+						<div class="copyright float-right">
+							&copy;
+							<script>
+								document.write(new Date().getFullYear())
+							</script>, Created by Simone Caggese & Riccardo Giordano
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+		<!-- Bootstrap core JavaScript-->
+		<script src="../static/js/popper.min.js"></script>
+		<script src="../static/vendor/jquery/dash-jquery.min.js"></script>
+		<script src="../static/js/bootstrap-material-design.min.js?v=2.1.2"></script>
+		<script src="../static/js/perfect-scrollbar.jquery.min.js"></script>
+		<script src="../static/js/holder.min.js"></script>
+		<script src="../static/js/index_app.js"></script>
+		<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+		<script src="../static/js/material-dashboard.js?v=2.1.2" type="text/javascript"></script>
+		<!-- Modal -->
+		<div class="modal fade" id="UpModal" tabindex="-1" role="dialog" aria-labelledby="ExModalUpgrade" aria-hidden="true" data-backdrop="static">
+			<div class="modal-dialog modal-xl" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Upgrade your plan</h5>
+						<button type="button" id="closebtn_upgrade" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<!--
+						<div class="modal-body">
+						  It looks like you haven't switched to our premium plan yet ... what are you waiting for?
+						
+						</div> -->
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12 col-md-6 col-lg-6">
+								<div class="panel panel-primary">
+									<div class="panel-heading">
+										<h3 class="panel-title">
+											Free
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div class="the-price">
+											<h2>
+												${{ plans_available[0] }}<span class="subscript">/mo</span>
+											</h2>
+										</div>
+										<table class="table">
+											<tr>
+												<td>
+													Limited API Access
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div class="panel-footer">
+										{% if user.plan_id==1 %}
+										<a href="#" class="btn btn-outline-secondary disabled" role="button">Sign Up</a>
+										{% else %}
+										<a data-update_plan="{{ plans_available[0] }}" data-id_plan="1" data-user_plan="{{ user.plan_id}}" data-id_user="{{ user.id }}" class="btn btn-success btn-updateplan" role="button">Sign Up</a>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6">
+								<div class="panel panel-primary">
+									<div class="panel-heading">
+										<h3 class="panel-title">
+											Premium
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div class="the-price">
+											<h2>
+												${{ plans_available[1] }}<span class="subscript">/mo</span>
+											</h2>
+										</div>
+										<table class="table">
+											<tr>
+												<td>
+													Full API Access
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div class="panel-footer">                              
+										{% if user.plan_id==2 %}
+										<a href="#" class="btn btn-outline-secondary disabled" role="button">Sign Up</a>
+										{% else %}
+										<a data-update_plan="{{ plans_available[1] }}" data-id_plan="2" data-id_user="{{ user.id }}" data-user_plan="{{ user.plan_id}}" class="btn btn-success btn-updateplan" role="button">Sign Up</a>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="close_plans" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Logout Modal-->
+		<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+						<a class="btn btn-primary" href="{{ url_for('.logout') }}">Logout</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal change plans-->
+		<div class="modal" tabindex="-1" role="dialog" id="updatePlan" >
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Change your plan</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p id="appendPrice">Are you sure to change your plan? After this action you'll have to reconnect to each CSPs.<br>The new plan will cost: </p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" data-p_update="" data-p_user="" id="saveChanges" class="btn btn-primary">Save changes</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		      <!-- Modal to change name-->
+			  <div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+				   <div class="modal-content">
+					  <div class="modal-header">
+						 <h5 class="modal-title" id="exampleModalLabel">Rename the instance</h5>
+						 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						 <span aria-hidden="true">&times;</span>
+						 </button>
+					  </div>
+					  <div class="modal-body">
+						 <input type="hidden" name="hiddenValue" id="hiddenValue" value="" />
+						 <label for="valueRename">Rename instance</label>
+						 <textarea class="form-control" id="valueRename" rows="3"></textarea>
+					  </div>
+					  <div class="modal-footer">
+						 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						 <button type="button" id="button_rename" class="btn btn-primary">Save changes</button>
+					  </div>
+				   </div>
+				</div>
+			 </div>
+
+<!-- -------------------------------------------- MODAL TO ADD AD INSTANCE --------------------------------------------  -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add an instance</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form id="myAddForm">
+                     <input type="hidden" name="userHiddenValue" id="userHiddenValue" value="" />
+                     <div class="form-group">
+                        <label for="selectProduct">Select your product</label>
+                        <select class="form-control" id="selectProduct">
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="ddInstanceValue">Insert the name</label>
+                        <textarea class="form-control" id="addInstanceValue" rows="3"></textarea>
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" id="button_add" class="btn btn-primary">Save changes</button>
+               </div>
+            </div>
+         </div>
+      </div>
+		<script>
+
+
+$(document).ready(function() {
+	$.ajax({
+        type: "GET",
+        url: "/api/get_products",
+        data: {
+            "csp": document.location.pathname.substr(document.location.pathname.lastIndexOf('/') + 1)
+        },
+        error: function(request, error) {
+            $('#vms_tbody').append($('<tr><td class="col-lg-12 col-md-12 col-sm-12"><h5>' + arguments[2] + ' : try to refresh the page. </h5></td></tr>'));
+            $('#dbs_tbody').append($('<tr><td class="col-lg-12 col-md-12 col-sm-12"><h5>' + arguments[2] + ' : try to refresh the page. </h5></td></tr>'));
+            $('#mails_tbody').append($('<tr><td class="col-lg-12 col-md-12 col-sm-12"><h5>' + arguments[2] + ' : try to refresh the page. </h5></td></tr>'));
+        },
+        success: function(response) {
+            let selectObj = $("#selectProduct");
+			for (choice of response){
+				selectObj.append("<option value='"+choice.id+"'>"+choice.name+"("+ choice.price+ " $)</option>");
+			}
+        }
+    });
+
+});
+
+$(document).ready(function() {
+    //var CurrPage= window.location.href;
+    hrefurl = $(location).attr("href");
+    last_part = hrefurl.substr(hrefurl.lastIndexOf('/') + 1);
+    $("#" + last_part).addClass("active");
+
+});
+
+function make_vm_card(id, name, storage_usage, ram_usage, active_state) {
+    let row = $("<tr></tr>");
+    let data = $('<td class="col-lg-12 col-md-12 col-sm-12"></td>');
+	var scope = "{{ user_scope}}";
+    data.append($('<h5>' + name + '</h5>'))
+    data.append($('<h4 class="small font-weight-bold">Space Available <span class="float-right">' + (100 - storage_usage) + '%</span></h4>'));
+    data.append($('<div class="progress mb-12">' +
+        '<div class="-bar progress-bar-striped progress-bar-animated bg-dark" role="progressbar" style="width: ' + (100 - storage_usage) + '%" aria-valuenow="' + (100 - storage_usage) + '" aria-valuemin="0" aria-valuemax="100"></div>' +
+        '</div>'));
+    data.append($('<h4 class="small font-weight-bold">RAM usage <span class="float-right">' + ram_usage + '%</span></h4>'));
+    data.append($('<div class="progress mb-12">' +
+        '<div class="-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: ' + ram_usage + '%" aria-valuenow="' + ram_usage + '" aria-valuemin="0" aria-valuemax="100"></div>' +
+        '</div>'));
+	
+	data.append($('<div class="custom-control custom-switch">' +
+		'<input type="checkbox" class="custom-control-input active_state" instance_id="' + id + '" id="instance_' + id + '"' + (active_state ? "checked" : "") + '>' +
+		'<label class="custom-control-label" instance_name="' + name + '"  for="instance_' + id + '">On / Off</label>' +
+		'</div>'));
+	row.append(data);
+
+	{% if user.get_plan().id == 2 %}
+	let actions = $('<td class="td-actions text-right"></td>');
+	actions.append($('<button type="button" rel="tooltip" title="Rename Instance" class="renameClass btn btn-primary btn-link btn-sm" data-toggle="modal" data-istance_name="' + name + '" data-istance_n_id="' + id + '" data-target="#renameModal">' +
+		'<i class="material-icons">edit</i>' +
+		'</button>'));
+	actions.append($('<button type="button" instance_name="' + name + '" instance_id="' + id + '" rel="tooltip" title="Remove" class="btn btn-danger btn-link btn-sm btn_del">' +
+		'<i class="material-icons">close</i>' +
+		'</button>'));
+
+    row.append(actions);
+
+	{% endif %}
+
+    return row;
+}
+
+function make_db_mail_card(id, name, storage_usage, active_state) {
+	
+	var scope = "{{ user_scope}}";
+    let row = $("<tr></tr>");
+    let data = $('<td class="col-lg-12 col-md-12 col-sm-12"></td>');
+    data.append($('<h5>' + name + '</h5>'))
+    data.append($('<h4 class="small font-weight-bold">Space Available <span class="float-right">' + (100 - storage_usage) + '%</span></h4>'));
+    data.append($('<div class="progress mb-12">' +
+        '<div class="-bar progress-bar-striped progress-bar-animated bg-dark" role="progressbar" style="width: ' + (100 - storage_usage) + '%" aria-valuenow="' + (100 - storage_usage) + '" aria-valuemin="0" aria-valuemax="100"></div>' +
+        '</div>'));
+	data.append($('<div class="custom-control custom-switch">' +
+		'<input type="checkbox" class="custom-control-input active_state" instance_id="' + id + '" id="instance_' + id + '"' + (active_state ? "checked" : "") + '>' +
+		'<label class="custom-control-label" instance_name="' + name + '"  for="instance_' + id + '">On / Off</label>' +
+		'</div>'));
+
+	row.append(data)
+
+	{% if user.get_plan().id == 2 %}	
+	let actions = $('<td class="td-actions text-right"></td>');
+		actions.append($('<button type="button" rel="tooltip" title="Rename Instance" class="renameClass btn btn-primary btn-link btn-sm" data-toggle="modal" data-istance_name="' + name + '" data-istance_n_id="' + id + '" data-target="#renameModal">' +
+			'<i class="material-icons">edit</i>' +
+			'</button>'));
+		actions.append($('<button type="button" instance_name="' + name + '" instance_id="' + id + '" rel="tooltip" title="Remove" class="btn btn-danger btn-link btn-sm btn_del">' +
+			'<i class="material-icons">close</i>' +
+			'</button>'));
+
+    row.append(actions);
+	{% endif %}
+    return row;
+}
+
+function update_cards() {
+    $.ajax({
+        type: "GET",
+        url: "/api/get_instances",
+        data: {
+            "csp": document.location.pathname.substr(document.location.pathname.lastIndexOf('/') + 1)
+        },
+        error: function(request, error) {
+            $('#vms_tbody').append($('<tr><td class="col-lg-12 col-md-12 col-sm-12"><h5>' + arguments[2] + ' : try to refresh the page. </h5></td></tr>'));
+            $('#dbs_tbody').append($('<tr><td class="col-lg-12 col-md-12 col-sm-12"><h5>' + arguments[2] + ' : try to refresh the page. </h5></td></tr>'));
+            $('#mails_tbody').append($('<tr><td class="col-lg-12 col-md-12 col-sm-12"><h5>' + arguments[2] + ' : try to refresh the page. </h5></td></tr>'));
+        },
+        success: function(response) {
+            let vms = $('#vms_tbody');
+            let dbs = $('#dbs_tbody');
+            let mails = $('#mails_tbody');
+            for (instance of response) {
+                let id = instance['id'];
+                let name = instance['name'];
+                let storage_usage = instance['storage_usage'];
+                let ram_usage = instance['ram_usage'];
+                let active_state = instance['active_state'];
+                if (instance['product']['name'] === 'Virtual Machine')
+                    vms.append(make_vm_card(id, name, storage_usage, ram_usage, active_state));
+                else if (instance['product']['name'] === 'Database')
+                    dbs.append(make_db_mail_card(id, name, storage_usage, active_state));
+                else if (instance['product']['name'] === 'Mailserver')
+                    mails.append(make_db_mail_card(id, name, storage_usage, active_state));
+            }
+        }
+    });
+}
+
+$(document).ready(update_cards);
+
+// -------------------------------------------- UPGRADE PLAN USER BUTTON -------------------------------------------- 
+
+$(document).ready(function() {
+    $(".btn-updateplan").click(function() {
+        var pricePlanChoice = $(this).data('update_plan'); // useInstance and maxInstance
+        var idPlanChoice = $(this).data('id_plan');
+        var idUser = $(this).data('id_user');
+        var userPlan = $(this).data('user_plan'); // actual plan
+
+        $("#UpModal").modal('hide');
+        $('#appendPrice').html("Are you sure to change your plan? After this action you'll have to reconnect to each CSPs.<br>The new plan will cost: ");
+        $('#appendPrice').append(pricePlanChoice);
+        $("#saveChanges").attr("data-p_update", idPlanChoice);
+        $("#saveChanges").attr("data-p_user", idUser);
+        $('#updatePlan').modal('show');
+
+
+    });
+});
+
+$(document).ready(function() {
+    $("#saveChanges").click(function() {
+        p_pl = $(this).data('p_update');
+        p_us = $(this).data('p_user');
+        $.ajax({
+            type: 'POST',
+            url: "{{url_for('.update_plan')}}",
+            data: {
+                plan_id: p_pl,
+                user_id: p_us
+            },
+            success: function(result) {
+                location.href='/';
+            }
+        });
+    });
+});
+
+
+// -------------------------------------------- GET URL CSP BUTTON -------------------------------------------- 
+/*
+$(document).ready(function() {
+    $(".view_csp").click(function() {
+        var origin = window.location.origin;
+        var cloud_name = $(this).data('cloud_name');
+        final = origin + '/csp/' + cloud_name;
+        window.location.href = final;
+    });
+});
+*/
+
+{% if user.get_plan().id == 2 %}
+
+// -------------------------------------------- RENAME BUTTON -------------------------------------------- 
+$(document).on('click', '.renameClass', function() {
+    var my_id_value = $(this).data('istance_n_id');
+    var my_id_value2 = $(this).data('istance_name');
+    console.log(my_id_value + "   " + my_id_value2);
+    $(".modal-body #hiddenValue").val(my_id_value);
+    $('#valueRename').val(my_id_value2);
+});
+
+
+
+$(document).on('click', '#button_rename', function() {
+    if ($("#valueRename").val().trim().length < 1) {
+        alert("The name of the instance can't be empty...");
+        return;
+    }
+    $.ajax({
+        url: '/api/rename_instance',
+        data: {
+			"csp": document.location.pathname.substr(document.location.pathname.lastIndexOf('/') + 1),
+            instance_id: $('#hiddenValue').val(),
+            instance_name: $('#valueRename').val()
+        },
+        type: 'POST',
+        success: function(result) {
+            $('#renameModal').modal('hide');
+            setTimeout(function() {
+                location.reload(true);
+            }, 300);
+        },
+        error: function(error) {
+            alert("Ops..! Something went wrong... Error: " + arguments[2]);
+            $('#renameModal').modal('hide');
+            console.log(error);
+        }
+    });
+});
+
+// -------------------------------------------- DELETE BUTTON -------------------------------------------- 
+$(document).on('click', '.btn_del', function() {
+    let instance_id, instance_name;
+    //alert($(this).attr('instance_id'));
+    //alert($(this).attr('instance_name'));
+    $.ajax({
+        type: 'POST',
+        url: '/api/delete_instance',
+        data: {
+			"csp": document.location.pathname.substr(document.location.pathname.lastIndexOf('/') + 1),
+            instance_id: $(this).attr('instance_id'),
+            instance_name: $(this).attr('instance_name')
+        },
+        success: function(result) {
+            location.reload(true);
+        },
+        error: function(error) {
+            alert("Ops..! Something went wrong... Error: " + arguments[2]);
+        }
+    });
+});
+
+// -------------------------------------------- CREATE_INSTANCE BUTTON -------------------------------------------- 
+$(document).ready(function() {
+    $("#button_add").click(function() {
+        console.log($('#addInstanceValue').val());
+        console.log($('#selectProduct').val());
+
+
+        /* Check name of the instance */
+        if ($("#addInstanceValue").val().trim().length < 1) {
+            alert("The name of the instance can't be empty...");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: "/api/create_instance",
+            data: {
+				"csp": document.location.pathname.substr(document.location.pathname.lastIndexOf('/') + 1),
+                instance_name: $('#addInstanceValue').val(),
+                instance_productid: $('#selectProduct').val()
+            },
+			error: function(error) {
+				jsonValue = jQuery.parseJSON( error.responseText );
+				var errorValue = (jQuery.parseJSON(jsonValue.error));
+				alert(errorValue.error);
+				setTimeout(function() {
+                    location.reload(true);
+                }, 300);	
+			},
+            success: function(result) {
+                console.log(result);
+                $('#addModal').modal('hide');
+                setTimeout(function() {
+                    location.reload(true);
+                }, 300);
+            }
+        });
+    });;
+});
+{% endif %}
+
+
+// -------------------------------------------- ON/OFF BUTTON -------------------------------------------- 
+
+$(document).on('click', '.active_state', function(event) {
+    var boolCheck = false;
+    var activeIns = $("#activeInstanceCard").text();
+	{% if user.get_plan().id == 2 %}
+    if ($(this).prop("checked") == true) {
+        boolCheck = true
+    } else {
+        boolCheck = false
+    }
+    $.ajax({
+        type: 'POST',
+        url: "/api/set_instance_activestate",
+        data: {
+			"csp": document.location.pathname.substr(document.location.pathname.lastIndexOf('/') + 1),
+            instance_id: $(this).attr('instance_id'),
+            instance_activestate: boolCheck
+        },
+        success: function(result) {
+            if (boolCheck) activeIns++;
+            else activeIns--;
+            $("#activeInstanceCard").text(activeIns);
+        },
+        error: function(error) {
+            alert("Ops..! Something went wrong... Error: " + arguments[2]);
+        }
+    });
+	{% else %}
+		event.preventDefault();
+		event.stopPropagation();
+	{% endif %}
+});
+		</script>
+	</body>
+</html>

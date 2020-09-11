@@ -1,0 +1,31 @@
+$.ajax({
+  type: "POST",
+  url: "/api/delete_instance",
+  data: {
+		"instance_id" : 5
+	},
+  success: function(response) {
+		console.log(response)  
+}
+});
+
+openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
+
+export REQUESTS_CA_BUNDLE=/path/to/cert.pem
+
+FLASK_ENV=development flask run --cert=cert.pem --key=key.pem
+
+Authorization Code Grant
+https://csp/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=CALLBACK_URL&scope=read
+https://mycsm/callback/csp/read?code=AUTHORIZATION_CODE
+https://csp/oauth/token?client_id=CLIENT_ID&client_secret=CLIENT_SECRET&grant_type=authorization_code&code=AUTHORIZATION_CODE
+
+Implicit Grant
+https://csp/oauth/authorize?response_type=token&client_id=CLIENT_ID&redirect_uri=CALLBACK_URL&scope=read
+https://mycsm/callback/csp/read#token=ACCESS_TOKEN
+
+Resource Owner Password Credentials Grant
+https://csp/oauth/token?grant_type=password&username=USERNAME&password=PASSWORD&client_id=CLIENT_ID
+
+Client Credentials Grant
+https://csp//oauth/token?grant_type=client_credentials&client_id=CLIENT_ID&client_secret=CLIENT_SECRET

@@ -1,0 +1,151 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>AnalogOcean - OAuth</title>
+      <!-- Custom fonts for this template-->
+      <link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+      <!-- Custom styles for this template-->
+      <link href="../static/css/sb-admin-2.min.css" rel="stylesheet">
+      <!-- Bootstrap core JavaScript-->
+      <script src="../static/vendor/jquery/jquery.min.js"></script>
+      <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- Core plugin JavaScript-->
+      <script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+      <!-- Custom scripts for all pages-->
+      <script src="../static/js/sb-admin-2.min.js"></script>
+   </head>
+   <body>
+      <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+         <!-- Sidebar Toggle (Topbar) -->
+		 
+		<a class="btn btn-primary" href="/oauth" style="margin:2px"><i class="fas fa-chevron-left"></i>Go back</a>
+         <a class="navbar-brand" href="/create_client">
+         <button  class="btn btn-primary" alt="">
+         Create a new Client</button>
+         </a>
+         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+         <i class="fa fa-bars"></i>
+         </button>
+         <!-- Topbar Navbar -->
+         <ul class="navbar-nav ml-auto">
+            <div class="topbar-divider d-none d-sm-block"></div>
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <span class="mr-2 d-none d-lg-inline small">Logged in as <strong>{{user.username}}</strong></span>
+               <i class="fa fa-user" aria-hidden="true"></i>
+               </a>
+               <!-- Dropdown - User Information -->
+               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                  <a class="dropdown-item" href="/oauth/logout">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                  </a>
+               </div>
+            </li>
+         </ul>
+      </nav>
+	  {% if clients|count == 0 %}
+
+      <p> Seems you don't have any clients yet...</p>
+
+      {% endif %}
+      <div class="accordion" id="accordionExample">
+         {% for client in clients %}
+         <div class="card">
+            <div class="card-header" id="heading{{client.id}}">
+               <h2 class="mb-0">
+                  <div class="btn-group">
+                     <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse{{client.id}}" aria-expanded="true" aria-controls="heading{{client.id}}">
+                     Client Information
+                     </button>
+                     <button type="button" oauth2_id="{{client.id}}" class="btn btn-outline-danger btn_del"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                  </div>
+               </h2>
+            </div>
+            <div id="collapse{{client.id}}" class="collapse show" aria-labelledby="heading{{client.id}}" data-parent="#accordionExample">
+               <div class="card-body">
+                  <h5 class="card-title">Client Information</h5>
+                  <table class="table">
+                     <thead>
+                        <tr>
+                           <th scope="col">Client Id</th>
+                           <th scope="col">Client secret</th>
+                           <th scope="col">Client id issued at</th>
+                           <!--<th scope="col">OAuth2 Client id</th>
+                              <th scope="col">OAuth2 User id</th>-->
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td>{{client.client_id}}</td>
+                           <td>{{client.client_secret}}</td>
+                           <td>{{client.client_id_issued_at| pretty_date}}</td>
+                           <!--<td>{{client.id}}</td>
+                              <td>{{client.user_id}}</td>-->
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <hr>
+               <div class="card-body">
+                  <h5 class="card-title">Client Metadata</h5>
+                  <table class="table">
+                     <thead>
+                        <tr>
+                           {% for col in client.client_metadata %}
+                           <th>{{ col }}</th>
+                           {% endfor %}
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                              {% for client in client.client_metadata.values() %}
+                                 {% if client is iterable and client is not string %}
+                                 <td>
+                                    <ul>
+                                    {% for u in client %}
+                                       <li>{{u}}</li>
+                                    {% endfor %}
+                                    </ul>
+                                 </td>
+                                 {% else %}
+                                 <td>{{client}}</td>
+                                 {% endif %}
+                              {% endfor %}
+                        </tr>                        
+                     </tbody>
+                  </table>
+                  </table>
+               </div>
+            </div>
+         </div>
+         {% endfor %}
+      </div>
+   </body>
+
+   <script>
+    $(document).ready(function(){
+       $(".btn_del").click(function(){
+          $.ajax({
+             type: 'POST',
+             url: "/oauth/delete_client",
+             data : {
+                oauth2_id : $(this).attr('oauth2_id'),
+             },
+             success: function(result) {
+                console.log(result);
+                location.reload(true);
+             }
+          });
+       });
+    ;});
+  </script>

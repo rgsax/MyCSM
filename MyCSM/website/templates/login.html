@@ -1,0 +1,48 @@
+<!--
+	=========================================================
+	MyCSM Dashboard 
+	=========================================================
+	
+	Copyright 2020 
+	Coded by Riccardo Giordano & Simone Caggese
+	
+	=========================================================
+	The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>Login for MyCSM</title>
+      <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/floating-labels/">
+      <!-- Bootstrap core CSS -->
+      <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+      <link href="../static/css/login-app.css" rel="stylesheet">
+      <script src="../static/vendor/jquery/jquery.min.js"></script>
+      <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- Custom styles for this template -->
+    </head>
+    <body>
+      <form class="form-signin" method="post">
+        <div class="text-center mb-4">
+          <img class="mb-4" src="../static/img/logo2.png" alt="" width="150" height="150">
+          <h1 class="h3 mb-3 font-weight-normal">MyCSM</h1>
+        </div>
+        <div class="form-label-group">
+          <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+          <label for="inputEmail">Email address</label>
+        </div>
+        <div class="form-label-group">
+          <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+          <label for="inputPassword">Password</label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <div class="text-center">
+          <a class="small" href="{{url_for('.register')}}">Create an Account!</a>
+        </div>
+        <p class="mt-5 mb-3 text-muted text-center">&copy; Riccardo Giordano & Simone Caggese 2020</p>
+      </form>
+    </body>
+  </html>

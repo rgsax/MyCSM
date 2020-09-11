@@ -1,0 +1,425 @@
+<!--
+	=========================================================
+	MyCSM Dashboard 
+	=========================================================
+	
+	Copyright 2020 
+	Coded by Riccardo Giordano & Simone Caggese
+	
+	=========================================================
+	The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+      <title>
+        MyCSM Dashboard
+      </title>
+      <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+      <!--     Fonts and icons     -->
+      <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+      <link href="static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+      <!-- CSS Files -->
+      <link href="../static/css/dashboard.min.css" rel="stylesheet" />
+    </head>
+    <body class="">
+      <div class="wrapper ">
+        <div class="sidebar" data-color="azure" data-background-color="white">
+          <!--
+            Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+            
+            Tip 2: you can also add an image using data-image tag
+            -->
+          <div class="logo"><a href="{{ url_for('.home') }}"><img src="../static/img/logo1.png"  alt="" width="200" height="50"></a></div>
+          <div class="sidebar-wrapper">
+            <ul class="nav">
+              <li class="nav-item  ">
+                <a class="nav-link" style="cursor:pointer" href="{{ url_for('.home') }}">
+                  <i class="material-icons">dashboard</i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
+              <li class="nav-item  active">
+                <a class="nav-link" href="{{ url_for('.user_info') }}">
+                  <i class="material-icons">person</i>
+                  <p>User Profile</p>
+                </a>
+              </li>
+              {% for cloud_id, cloud_name in user_csps %}
+              <li class="nav-item">
+                <a class="nav-link" style="cursor:pointer" onclick="window.location.href='/csp/{{cloud_name}}'">
+                  <i class="material-icons">leaderboard</i>
+                  <p>{{cloud_name}}</p>
+                </a>
+              </li>
+              {% endfor %}
+              <li class="nav-item active-pro ">
+                <a class="nav-link" style="cursor:pointer" data-toggle="modal" data-target="#UpModal">
+                  <i class="material-icons">unarchive</i>
+                  <p>Upgrade to PRO</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="main-panel">
+          <!-- Navbar -->
+          <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+            <div class="container-fluid">
+              <div class="navbar-wrapper">
+                <a class="navbar-brand" href="{{ url_for('.home') }}">Go Back To Dashboard</a>
+              </div>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="navbar-toggler-icon icon-bar"></span>
+              <span class="navbar-toggler-icon icon-bar"></span>
+              <span class="navbar-toggler-icon icon-bar"></span>
+              </button>
+              <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('.home') }}">
+                      <i class="material-icons">dashboard</i>
+                      <p class="d-lg-none d-md-block">
+                        Stats
+                      </p>
+                    </a>
+                  </li>
+                  {% if user.plan_id==1 %}
+                  <!-- Free -->
+                  <button class="btn btn-outline-danger" data-toggle="modal" data-target="#UpModal">
+                  <span class="mr-2 d-none d-lg-inline text-green-600 small">Free</span>
+                  <i class="fa fa-star-half" aria-hidden="true"></i>
+                  </button>      
+                  {% else %}
+                  <!-- Premium -->
+                  <button class="btn btn-outline-success" data-toggle="modal" data-target="#UpModal">
+                  <span class="mr-2 d-none d-lg-inline text-green-600 small">Premium </span>
+                  <i class="fa fa-star" aria-hidden="true"></i>
+                  </button>
+                  {% endif %}
+                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="navbar-text white-text"> <i class="fa fa-user " aria-hidden="true"></i> {{user.username}}</span>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Logout
+                    </a>
+                  </div>
+                </ul>
+              </div>
+            </div>
+          </nav>
+          <!-- End Navbar -->
+          <div style="margin-top: 70px;
+            padding: 30px 15px;">
+            <div class="container-fluid">
+              <div class="row">
+                
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <div class="card card-stats">
+                    <div class="card-header card-header-success card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">store</i>
+                      </div>
+                      <p class="card-category">Total Expenditures</p>
+                      <h3 class="card-title">${{tot_exp}}</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="card">
+                    <div class="card-header card-header-primary">
+                      <h4 class="card-title">Your Profile</h4>
+                      <p class="card-category">Some details</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Your username: <b>{{user.username}}</b></label>
+                      </div>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Your email: <b>{{user.email}}</b></label>
+                      </div>
+                      <!-- Token for debugging -->
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Token number: <b>{{user.token}}</b></label>
+                      </div>
+                      <div class="form-group">
+                        {% if user.plan_id==1 %}
+                        <!-- Free -->
+                        <label class="bmd-label-floating">Type of profile: <b>Free</b></label>
+                        {% else %}
+                        <!-- Premium -->
+                        <label class="bmd-label-floating">Type of profile: <b>Premium</b></label>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card card-profile">
+                    <div class="card-avatar">
+                      <a href="https://www.linkedin.com/in/riccardo-giordano-23243013b/">
+                      <img class="img" style="border-radius: 50%;" src="../static/img/riccardo.jpg" />
+                      </a>
+                    </div>
+                    <div class="card-body">
+                      <h6 class="card-category text-gray">CEO / Co-Founder</h6>
+                      <h4 class="card-title">Riccardo Giordano</h4>
+                      <a href="https://www.linkedin.com/in/riccardo-giordano-23243013b/" class="btn btn-primary btn-round">Follow</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                  <div class="card card-profile">
+                    <div class="card-avatar">
+                      <a href="https://www.linkedin.com/in/simone-caggese/">
+                      <img class="img" style="border-radius: 50%;" src="../static/img/simone.jpg" />
+                      </a>
+                    </div>
+                    <div class="card-body">
+                      <h6 class="card-category text-gray">CEO / Co-Founder</h6>
+                      <h4 class="card-title">Simone Caggese</h4>
+                      <a href="https://www.linkedin.com/in/simone-caggese/" class="btn btn-primary btn-round">Follow</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="footer">
+            <div class="container-fluid">
+              <div class="copyright float-right">
+                &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>, made with <i class="material-icons"></i> by Simone Caggese & Riccardo Giordano
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <!-- Bootstrap core JavaScript-->
+      <script src="../static/js/popper.min.js"></script>
+      <script src="../static/vendor/jquery/dash-jquery.min.js"></script>
+      <script src="../static/js/bootstrap-material-design.min.js?v=2.1.2"></script>
+      <script src="../static/js/perfect-scrollbar.jquery.min.js"></script>
+      <script src="../static/js/holder.min.js"></script>
+      <script src="../static/js/index_app.js"></script>
+      <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+      <script src="../static/js/material-dashboard.js?v=2.1.2" type="text/javascript"></script>
+      <!-- Modal -->
+      <div class="modal fade" id="UpModal" tabindex="-1" role="dialog" aria-labelledby="ExModalUpgrade" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Upgrade your plan</h5>
+              <button type="button" id="closebtn_upgrade" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!--
+              <div class="modal-body">
+                It looks like you haven't switched to our premium plan yet ... what are you waiting for?
+              
+              </div> -->
+            <div class="container">
+              <div class="row">
+                <div class="col-xs-12 col-md-6 col-lg-6">
+                  <div class="panel panel-primary">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">
+                        Free
+                      </h3>
+                    </div>
+                    <div class="panel-body">
+                      <div class="the-price">
+                        <h2>
+                          ${{ plans_available[0] }}<span class="subscript">/mo</span>
+                        </h2>
+                      </div>
+                      <table class="table">
+                        <tr>
+                          <td>
+                            Limited API Access
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class="panel-footer">
+                      {% if user.plan_id==1 %}
+                      <a href="#" class="btn btn-outline-secondary disabled" role="button">Sign Up</a>
+                      {% else %}
+                      <a data-update_plan="{{ plans_available[0] }}" data-id_plan="1" data-user_plan="{{ user.plan_id}}" data-id_user="{{ user.id }}" class="btn btn-success btn-updateplan" role="button">Sign Up</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-6 col-lg-6">
+                  <div class="panel panel-primary">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">
+                        Premium
+                      </h3>
+                    </div>
+                    <div class="panel-body">
+                      <div class="the-price">
+                        <h2>
+                          ${{ plans_available[1] }}<span class="subscript">/mo</span>
+                        </h2>
+                      </div>
+                      <table class="table">
+                        <tr>
+                          <td>
+                            Full API Access
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class="panel-footer">                              
+                      {% if user.plan_id==2 %}
+                      <a href="#" class="btn btn-outline-secondary disabled" role="button">Sign Up</a>
+                      {% else %}
+                      <a data-update_plan="{{ plans_available[1] }}" data-id_plan="2" data-id_user="{{ user.id }}" data-user_plan="{{ user.plan_id}}" class="btn btn-success btn-updateplan" role="button">Sign Up</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="close_plans" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Logout Modal-->
+      <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+              <a class="btn btn-primary" href="{{ url_for('.logout') }}">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Add new CSP modal-->
+      <div class="modal fade" id="addCSPModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Choose your CSP</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="{{ url_for('.add_csp') }}" method="post">
+                <select class="form-control" name="csp_id" id="clouds" required>
+                  {% for cloud_id, cloud_name in clouds if (cloud_id, cloud_name) not in user_csps %}
+                  <option value="{{cloud_id}}">{{cloud_name}}</option>
+                  {% endfor %}
+                </select>
+                <input type="submit" class="btn btn-primary btn-user btn-block" value="Add CSP">
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal change plans-->
+      <div class="modal" tabindex="-1" role="dialog" id="updatePlan" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Change your plan</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p id="appendPrice">Are you sure to change your plan? After this action you'll have to reconnect to each CSPs.<br>The new plan will cost: </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" data-p_update="" data-p_user="" id="saveChanges" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        $(document).ready(function(){
+           $(".btn-updateplan").click(function(){
+              var pricePlanChoice = $(this).data('update_plan'); // useInstance and maxInstance
+              var idPlanChoice = $(this).data('id_plan');
+              var idUser = $(this).data('id_user');
+              var userPlan = $(this).data('user_plan'); // actual plan
+              console.log(pricePlanChoice);
+        
+              $("#UpModal").modal('hide');
+              $('#appendPrice').html("Are you sure to change your plan? After this action you'll have to reconnect to each CSPs.<br>The new plan will cost: ");
+              $('#appendPrice').append(pricePlanChoice);
+              $("#saveChanges").attr("data-p_update", idPlanChoice);
+              $("#saveChanges").attr("data-p_user", idUser );
+              $('#updatePlan').modal('show');
+              
+        
+           });
+        ;});
+        
+        $(document).ready(function(){
+           $(".view_csp").click(function(){
+              var origin = window.location.origin;
+              var cloud_name = $(this).data('cloud_name');
+              final = origin+'/csp/'+cloud_name;
+              window.location.href = final;
+           });
+             
+        });
+           
+        
+        
+        
+        $(document).ready(function(){
+                 $("#saveChanges").click(function(){
+                    p_pl = $(this).data('p_update');
+                    p_us = $(this).data('p_user');
+                    console.log(p_pl);
+                    console.log(p_us);
+                    $.ajax({
+                       type: 'POST',
+                       url: "{{url_for('.update_plan')}}",
+                       data : {
+                          plan_id : p_pl,
+                          user_id : p_us
+                       },
+                       success: function(result) {
+                          console.log(result);
+                          location.reload(true);
+                       }
+                    });
+                 });
+                });
+        
+      </script>
+    </body>
+  </html>

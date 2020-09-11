@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>MircosoftAzzure - Dashboard</title>
+      <!-- Custom fonts for this template-->
+      <link href="static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+      <!-- Custom styles for this template-->
+      <link href="static/css/sb-admin-2.min.css" rel="stylesheet">
+      <style>
+         .panel
+         {
+         text-align: center;
+         }
+         .panel:hover { box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4), 0 1px 5px rgba(130, 130, 130, 0.35); }
+         .panel-body
+         {
+         padding: 0px;
+         text-align: center;
+         }
+         .the-price
+         {
+         background-color: rgba(220,220,220,.17);
+         box-shadow: 0 1px 0 #dcdcdc, inset 0 1px 0 #fff;
+         padding: 20px;
+         margin: 0;
+         }
+         .the-price h1
+         {
+         line-height: 1em;
+         padding: 0;
+         margin: 0;
+         }
+         .subscript
+         {
+         font-size: 25px;
+         }
+         /* CSS-only ribbon styles    */
+         .cnrflash
+         {
+         /*Position correctly within container*/
+         position: absolute;
+         top: -9px;
+         right: 4px;
+         z-index: 1; /*Set overflow to hidden, to mask inner square*/
+         overflow: hidden; /*Set size and add subtle rounding  		to soften edges*/
+         width: 100px;
+         height: 100px;
+         border-radius: 3px 5px 3px 0;
+         }
+         .cnrflash-inner
+         {
+         /*Set position, make larger then 			container and rotate 45 degrees*/
+         position: absolute;
+         bottom: 0;
+         right: 0;
+         width: 145px;
+         height: 145px;
+         -ms-transform: rotate(45deg); /* IE 9 */
+         -o-transform: rotate(45deg); /* Opera */
+         -moz-transform: rotate(45deg); /* Firefox */
+         -webkit-transform: rotate(45deg); /* Safari and Chrome */
+         -webkit-transform-origin: 100% 100%; /*Purely decorative effects to add texture and stuff*/ /* Safari and Chrome */
+         -ms-transform-origin: 100% 100%;  /* IE 9 */
+         -o-transform-origin: 100% 100%; /* Opera */
+         -moz-transform-origin: 100% 100%; /* Firefox */
+         background-image: linear-gradient(90deg, transparent 50%, rgba(255,255,255,.1) 50%), linear-gradient(0deg, transparent 0%, rgba(1,1,1,.2) 50%);
+         background-size: 4px,auto, auto,auto;
+         background-color: #aa0101;
+         box-shadow: 0 3px 3px 0 rgba(1,1,1,.5), 0 1px 0 0 rgba(1,1,1,.5), inset 0 -1px 8px 0 rgba(255,255,255,.3), inset 0 -1px 0 0 rgba(255,255,255,.2);
+         }
+         .cnrflash-inner:before, .cnrflash-inner:after
+         {
+         /*Use the border triangle trick to make  				it look like the ribbon wraps round it's 				container*/
+         content: " ";
+         display: block;
+         position: absolute;
+         bottom: -16px;
+         width: 0;
+         height: 0;
+         border: 8px solid #800000;
+         }
+         .cnrflash-inner:before
+         {
+         left: 1px;
+         border-bottom-color: transparent;
+         border-right-color: transparent;
+         }
+         .cnrflash-inner:after
+         {
+         right: 0;
+         border-bottom-color: transparent;
+         border-left-color: transparent;
+         }
+         .cnrflash-label
+         {
+         /*Make the label look nice*/
+         position: absolute;
+         bottom: 0;
+         left: 0;
+         display: block;
+         width: 100%;
+         padding-bottom: 5px;
+         color: #fff;
+         text-shadow: 0 1px 1px rgba(1,1,1,.8);
+         font-size: 0.95em;
+         font-weight: bold;
+         text-align: center;
+         }
+      </style>
+   </head>
+   <body id="page-top">
+      <!-- Page Wrapper -->
+      <!-- Main Content -->
+      <div id="content">
+      <!-- Topbar -->
+      <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+         <a class="navbar-brand" href="#">
+            <img src="static/img/logo.png" width="120px" alt="">
+          </a>
+         <!-- Sidebar Toggle (Topbar) -->
+         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+         <i class="fa fa-bars"></i>
+         </button>
+         <!-- Topbar Navbar -->
+         <ul class="navbar-nav ml-auto">
+            <div class="topbar-divider d-none d-sm-block"></div>
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{user.username}}</span>
+               <i class="fa fa-user" aria-hidden="true"></i>
+               </a>
+               <!-- Dropdown - User Information -->
+               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                  </a>
+               </div>
+            </li>
+         </ul>
+      </nav>
+      <!-- End of Topbar -->
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+         <!-- Page Heading -->
+         <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard MircosoftAzzure</h1>
+         </div>
+         <!-- Content Row -->
+         <div class="row">
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+               <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                     <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                           <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Spendings (Monthly)</div>
+                           <div class="h5 mb-0 font-weight-bold text-gray-800">${{spending_mounthly}}</div>
+                        </div>
+                        <div class="col-auto">
+                           <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+               <div class="card border-left-success shadow h-100 py-2">
+                  <div class="card-body">
+                     <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                           <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Spendings (Annual)</div>
+                           <div class="h5 mb-0 font-weight-bold text-gray-800">${{spending_mounthly * 12}}</div>
+                        </div>
+                        <div class="col-auto">
+                           <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+               <!-- se non è premium, offri la possibilità di passarci -->
+               <a href="#" data-toggle="modal" data-target="#ModalUpgrade">
+                  <div class="card border-left-info shadow h-100 py-2" >
+                     <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                           <div class="col mr-2">
+                              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Instance Usage</div>
+                              <div class="row no-gutters align-items-center">
+                                 <div class="col-auto">
+                                    <!-- premium 
+                                       <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">1/&#8734</div>
+                                       -->
+                                    <!-- free -->
+                                    {% if max_instances %}
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="instanceUsage" data-maxinstance="{{max_instances}}" data-useinstances="{{user.get_instances()|length}}">{{user.get_instances()|length}}/{{max_instances}}</div>
+                                    {% else %}
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="instanceUsage" data-maxinstance="null" data-useinstances="{{user.get_instances()|length}}">{{user.get_instances()|length}}/&#8734;</div>
+                                    {% endif %}
+                                 </div>
+                                 <div class="col">
+                                    <div class="progress progress-sm mr-2">
+                                       {% if max_instances %}
+                                       <div class="progress-bar bg-info" role="progressbar" style="width: {{user.get_instances()|length/max_instances*100}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                       {% else %}
+                                       <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                       {% endif %}
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-auto">
+                              <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </a>
+            </div>
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+               <div class="card border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                     <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                           <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Active Instances</div>
+                           <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeInstanceCard" data-activeinstance="{{active_instances}}">{{active_instances}}</div>
+                        </div>
+                        <div class="col-auto">
+                           <i class="fas fa-server fa-2x text-gray-300"></i>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- Content Row -->
+         <div class="row">
+            <!-- Content Column -->
+            <div class="col-lg-12 mb-4">
+               <div id="accordion">
+                  <div class="card">
+                     <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                           <button class="btn btn-link" data-toggle="collapse" data-target="#collapseVM" aria-expanded="false" aria-controls="collapseOne">
+                           Running Virtual Machines
+                           </button>
+                        </h5>
+                     </div>
+                     <div id="collapseVM" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                        <!-- Project Card Example -->
+                        <div class="card shadow mb-4">
+                           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                              <h6 class="m-0 font-weight-bold text-primary">Virtual Machines Manager</h6>
+                              <div class="dropdown no-arrow">
+                                 <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                 <i class="fas fa-ellipsis-v fa-sm fa-fw "></i>
+                                 </a>
+                                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                    <div class="dropdown-header">What would you like to do:</div>
+                                    <a class="dropdown-item addClass" data-istance_user_id="{{user.id}}" style="cursor:pointer;">Add a new VM</a>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <!-- --------------------------------------------------------- -->
+                        {% for instance in user.get_instances() if instance.get_product().id == 1 %}
+                        <div class="card-body">
+                           <!-- Valori che vengono pescati dalle API, questo si può duplicare nel caso di più Istanze -->
+                           <h5>{{instance.name}}
+                              <small>
+                              <span class="btn-group">
+                              <button type="button" class="renameClass btn btn-outline-dark" data-toggle="modal" data-istance_name='{{instance.name}}' data-istance_n_id='{{instance.id}}' data-target="#renameModal">
+                              <i class="fa fa-cogs" aria-hidden="true"></i>
+                              </button>
+                              </span>
+                              </small>
+                           </h5>
+                           <h4 class="small font-weight-bold">Space Available <span class="float-right">{{100 - instance.storage_usage}}%</span></h4>
+                           <div class="progress mb-4">
+                              <div class="progress-bar bg-danger" role="progressbar" style="width: {{100 - instance.storage_usage}}%" aria-valuenow="{{100 - instance.storage_usage}}" aria-valuemin="0" aria-valuemax="100"></div>
+                           </div>
+                           <h4 class="small font-weight-bold">RAM usage <span class="float-right">{{instance.ram_usage}}%</span></h4>
+                           <div class="progress mb-4">
+                              <div class="progress-bar bg-blue" role="progressbar" style="width: {{instance.ram_usage}}%" aria-valuenow="{{instance.ram_usage}}" aria-valuemin="0" aria-valuemax="100"></div>
+                           </div>
+                           <div class="custom-control custom-switch">
+                              <input type="checkbox" class="custom-control-input active_state" instance_id="{{instance.id}}" id="instance_{{instance.id}}" {% if instance.active_state == true %} checked {% endif %}>
+                              <label class="custom-control-label" instance_name="{{instance.name}}"  for="instance_{{instance.id}}">On / Off</label>
+                           </div>
+                           <br>
+                           <button type="button" instance_name="{{instance.name}}" instance_id="{{instance.id}}" class="btn btn-outline-danger btn_del"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
+                           <hr>
+                        </div>
+                        {% endfor %}
+                        <!-- --------------------------------------------------------- -->
+                     </div>
+                  </div>
+               </div>
+               <div class="card">
+                  <div class="card-header" id="headingTwo">
+                     <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseDB" aria-expanded="false" aria-controls="collapseTwo">
+                        Running Database
+                        </button>
+                     </h5>
+                  </div>
+                  <div id="collapseDB" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                     <!-- Project Card Example -->
+                     <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                           <h6 class="m-0 font-weight-bold text-primary">Database Manager</h6>
+                           <div class="dropdown no-arrow">
+                              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v fa-sm fa-fw"></i>
+                              </a>
+                              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                 <div class="dropdown-header">What would you like to do:</div>
+                                 <a class="dropdown-item addClass" data-istance_user_id="{{user.id}}" style="cursor:pointer;" >Add a new DB</a>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- --------------------------------------------------------- -->
+                     {% for instance in user.get_instances() if instance.get_product().id == 2 %}
+                     <div class="card-body">
+                        <!-- Valori che vengono pescati dalle API, questo si può duplicare nel caso di più Istanze -->
+                        <h5>{{instance.name}}
+                           <small>
+                           <span class="btn-group">
+                           <button type="button" class="renameClass btn btn-outline-dark" data-istance_n_id='{{instance.id}}' data-istance_name='{{instance.name}}' data-toggle="modal" data-target="#renameModal">
+                           <i class="fa fa-cogs" aria-hidden="true"></i>
+                           </button>
+                           </span>
+                           </small>
+                        </h5>
+                        <h4 class="small font-weight-bold">Space Available <span class="float-right">{{100 - instance.storage_usage}}%</span></h4>
+                        <div class="progress mb-4">
+                           <div class="progress-bar bg-danger" role="progressbar" style="width: {{100 - instance.storage_usage}}%" aria-valuenow="{{100 - instance.storage_usage}}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="custom-control custom-switch">
+                           <input type="checkbox" class="custom-control-input active_state" instance_id="{{instance.id}}" id="instance_{{instance.id}}" {% if instance.active_state == true %} checked {% endif %}>
+                           <label class="custom-control-label" instance_name="{{instance.name}}"  for="instance_{{instance.id}}">On / Off</label>
+                        </div>
+                        <br>
+                        <button type="button" instance_name="{{instance.name}}" instance_id="{{instance.id}}" class="btn btn-outline-danger btn_del"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
+                        <hr>
+                     </div>
+                     {% endfor %}
+                     <!-- --------------------------------------------------------- -->
+                  </div>
+               </div>
+               <div class="card">
+                  <div class="card-header" id="headingThree">
+                     <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseMail" aria-expanded="false" aria-controls="collapseThree">
+                        Running Mail Servers
+                        </button>
+                     </h5>
+                  </div>
+                  <div id="collapseMail" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                     <!-- Project Card Example -->
+                     <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                           <h6 class="m-0 font-weight-bold text-primary">Mailserver Manager</h6>
+                           <div class="dropdown no-arrow">
+                              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v fa-sm fa-fw"></i>
+                              </a>
+                              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                 <div class="dropdown-header">What would you like to do:</div>
+                                 <a class="dropdown-item addClass" data-istance_user_id="{{user.id}}" style="cursor:pointer;">Add a new Mail server</a>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- --------------------------------------------------------- -->
+                     {% for instance in user.get_instances() if instance.get_product().id == 3 %}
+                     <div class="card-body">
+                        <!-- Valori che vengono pescati dalle API, questo si può duplicare nel caso di più Istanze -->
+                        <h5>{{instance.name}}
+                           <small>
+                           <span class="btn-group">
+                           <button type="button" data-istance_n_id='{{instance.id}}' data-istance_name='{{instance.name}}' class="renameClass btn btn-outline-dark" data-toggle="modal" data-target="#renameModal">
+                           <i class="fa fa-cogs" aria-hidden="true"></i>
+                           </button>
+                           </span>
+                           </small>
+                        </h5>
+                        <h4 class="small font-weight-bold">Space Available <span class="float-right">{{100 - instance.storage_usage}}%</span></h4>
+                        <div class="progress mb-4">
+                           <div class="progress-bar bg-danger" role="progressbar" style="width: {{100 - instance.storage_usage}}%" aria-valuenow="{{100 - instance.storage_usage}}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="custom-control custom-switch">
+                           <input type="checkbox" class="custom-control-input active_state" instance_id="{{instance.id}}" id="instance_{{instance.id}}" {% if instance.active_state == true %} checked {% endif %}>
+                           <label class="custom-control-label" instance_name="{{instance.name}}"  for="instance_{{instance.id}}">On / Off</label>
+                        </div>
+                        <br>
+                        <button type="button" instance_name="{{instance.name}}" instance_id="{{instance.id}}" class="btn btn-outline-danger btn_del"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
+                        <hr>
+                     </div>
+                     {% endfor %}
+                     <!-- --------------------------------------------------------- -->
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- /.container-fluid -->
+      </div>
+      <!-- End of Main Content -->
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+         <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+               <span>Copyright &copy; Simone Caggese & Riccardo Giordano - 2020</span>
+            </div>
+         </div>
+      </footer>
+      <!-- End of Footer -->
+      <!-- Scroll to Top Button-->
+      <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+      </a>
+      <!-- Logout Modal-->
+      <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                  </button>
+               </div>
+               <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+               <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  <a class="btn btn-primary" href="/logout">Logout</a>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Bootstrap core JavaScript-->
+      <script src="static/vendor/jquery/jquery.min.js"></script>
+      <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- Core plugin JavaScript-->
+      <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+      <!-- Custom scripts for all pages-->
+      <script src="static/js/sb-admin-2.min.js"></script>
+      <script>
+$(document).ready(function() {
+    $(".renameClass").click(function() {
+        var my_id_value = $(this).data('istance_n_id');
+        var my_id_value2 = $(this).data('istance_name');
+        $(".modal-body #hiddenValue").val(my_id_value);
+        $('#valueRename').val(my_id_value2);
+    })
+});
+$(document).ready(function() {
+    $("#closebtn_upgrade").click(function() {
+        $('#addModal').modal('hide');
+    })
+});
+$(document).ready(function() {
+    $("#close_plans").click(function() {
+        $('#addModal').modal('hide');
+    })
+});
+$(document).ready(function() {
+    $(".addClass").click(function() {
+
+        /* Check maximum instances */
+        var instanceData = $('#instanceUsage').data('useinstances'); // useInstance and maxInstance
+        var instanceMax = $('#instanceUsage').data('maxinstance');
+
+        console.log(instanceData);
+        console.log(instanceMax);
+
+        if (instanceMax == null || instanceData != instanceMax) {
+            $('#addModal').modal('show');
+        } else {
+            alert("You have reached the limit of instances available for your plan!");
+            $('#ModalUpgrade').modal('show');
+            return;
+        }
+        var my_id_value = $(this).data('istance_user_id');
+        $(".modal-body #userHiddenValue").val(my_id_value);
+    })
+});
+
+$(document).ready(function() {
+
+    $(".active_state").click(function() {
+        var boolCheck = false;
+        var activeIns = $("#activeInstanceCard").text();
+        if ($(this).prop("checked") == true) {
+            boolCheck = true
+        } else {
+            boolCheck = false
+        }
+        $.ajax({
+            type: 'POST',
+            url: "/set_instance_activestate",
+            data: {
+                instance_id: $(this).attr('instance_id'),
+                instance_activestate: boolCheck
+            },
+            success: function(result) {
+                console.log(result);
+                if (boolCheck) activeIns++;
+                else activeIns--;
+                $("#activeInstanceCard").text(activeIns);
+
+            }
+        });
+    });;
+});
+$(document).ready(function() {
+    $(".btn_del").click(function() {
+        $.ajax({
+            type: 'POST',
+            url: "/delete_instance",
+            data: {
+                instance_id: $(this).attr('instance_id'),
+                instance_name: $(this).attr('instance_name')
+            },
+            success: function(result) {
+                console.log(result);
+                location.reload(true);
+            }
+        });
+    });;
+});
+$(document).ready(function() {
+    $("#button_rename").click(function() {
+        console.log($('#hiddenValue').val());
+        if ($("#valueRename").val().trim().length < 1) {
+            alert("The name of the instance can't be empty...");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: "/rename_instance",
+            data: {
+                instance_id: $('#hiddenValue').val(),
+                instance_name: $('#valueRename').val()
+            },
+            success: function(result) {
+                console.log(result);
+                $('#renameModal').modal('hide');
+                setTimeout(function() {
+                    location.reload(true);
+                }, 300);
+
+            }
+        });
+    });;
+});
+
+
+$(document).ready(function() {
+    $("#button_add").click(function() {
+        console.log($('#userHiddenValue').val());
+        console.log($('#addInstanceValue').val());
+        console.log($('#selectProduct').val());
+
+
+        /* Check name of the instance */
+        if ($("#addInstanceValue").val().trim().length < 1) {
+            alert("The name of the instance can't be empty...");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: "/create_instance",
+            data: {
+                instance_userid: $('#userHiddenValue').val(),
+                instance_name: $('#addInstanceValue').val(),
+                instance_productid: $('#selectProduct').val()
+            },
+            success: function(result) {
+                console.log(result);
+                $('#addModal').modal('hide');
+                setTimeout(function() {
+                    location.reload(true);
+                }, 300);
+            }
+        });
+    });;
+});
+         
+
+
+         
+      </script>
+      
+      <!-- Modal to change name-->
+      <div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Rename the instance</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <input type="hidden" name="hiddenValue" id="hiddenValue" value="" />
+                  <label for="valueRename">Rename instance</label>
+                  <textarea class="form-control" id="valueRename" rows="3"></textarea>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" id="button_rename" class="btn btn-primary">Save changes</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Modal to add an instance-->
+      <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add an instance</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form id="myAddForm">
+                     <input type="hidden" name="userHiddenValue" id="userHiddenValue" value="" />
+                     <div class="form-group">
+                        <label for="selectProduct">Select your product</label>
+                        <select class="form-control" id="selectProduct">
+						{% for product in products %}
+                           <option value='{{product.id}}'>{{product.name}} ( {{product.price}} $)</option>						
+						{% endfor %}
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="ddInstanceValue">Insert the name</label>
+                        <textarea class="form-control" id="addInstanceValue" rows="3"></textarea>
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" id="button_add" class="btn btn-primary">Save changes</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <script>
+         $(document).ready(function(){
+            $(".btn-updateplan").click(function(){
+               var pricePlanChoice = $(this).data('update_plan'); // useInstance and maxInstance
+               var idPlanChoice = $(this).data('id_plan'); // useInstance and maxInstance
+               var idUser = $(this).data('id_user');
+               var userPlan = $(this).data('user_plan'); // actual plan
+               var useInstance1 = $(this).data('useinstance');
+               var plansInstance= $(this).data('nplans_instance');
+               console.log(pricePlanChoice);
+
+               if (userPlan > idPlanChoice) // check number of instances 
+               {
+                  if(useInstance1 > plansInstance)
+                  {
+                     alert("Delete some instances to downgrade your plan");
+                     return;
+                  }
+                  
+               }
+               $("#ModalUpgrade").modal('hide');
+               $('#appendPrice').html("Are you sure to change your plan? The new plan will cost: ");
+               $('#appendPrice').append(pricePlanChoice);
+               $("#saveChanges").attr("data-p_update", idPlanChoice);
+               $("#saveChanges").attr("data-p_user", idUser );
+               $('#updatePlan').modal('show');
+               
+
+            });
+         ;});
+         
+         $(document).ready(function(){
+            $("#saveChanges").click(function(){
+               p_pl = $(this).data('p_update');
+               p_us = $(this).data('p_user');
+               console.log(p_pl);
+               console.log(p_us);
+               $.ajax({
+                  type: 'POST',
+                  url: "/update_plan",
+                  data : {
+                     plan_id : p_pl,
+                     user_id : p_us
+                  },
+                  success: function(result) {
+                     console.log(result);
+                     location.reload(true);
+                  }
+               });
+            });
+         ;});
+      </script>
+      <!-- Modal change plans-->
+      <div class="modal" tabindex="-1" role="dialog" id="updatePlan" >
+         <div class="modal-dialog" role="document">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title">Change your plan</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+               </button>
+             </div>
+             <div class="modal-body">
+               <p id="appendPrice">Are you sure to change your plan? The new plan will cost: </p>
+             </div>
+             <div class="modal-footer">
+               <button type="button" data-p_update="" data-p_user="" id="saveChanges" class="btn btn-primary">Save changes</button>
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             </div>
+           </div>
+         </div>
+       </div>
+
+
+      <!-- Modal -->
+      <div class="modal fade" id="ModalUpgrade" tabindex="-1" role="dialog" aria-labelledby="ExModalUpgrade" aria-hidden="true" data-backdrop="static">
+         <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Upgrade your plan</h5>
+                  <button type="button" id="closebtn_upgrade" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <!--
+                  <div class="modal-body">
+                    It looks like you haven't switched to our premium plan yet ... what are you waiting for?
+                  
+                  </div> -->
+               <div class="container">
+                  <div class="row">
+                     <div class="col-xs-12 col-md-4">
+                        <div class="panel panel-primary">
+                           <div class="panel-heading">
+                              <h3 class="panel-title">
+                                 Bronze
+                              </h3>
+                           </div>
+                           <div class="panel-body">
+                              <div class="the-price">
+                                 <h1>
+                                    ${{ plans_available[0] }}<span class="subscript">/mo</span>
+                                 </h1>
+                              </div>
+                              <table class="table">
+                                 <tr>
+                                    <td>
+                                       {{n_plans_instance[0]}} Instances
+                                    </td>
+                                 </tr>
+                                    <td>
+                                       Full API Access
+                                    </td>
+                                 </tr>
+                              </table>
+                           </div>
+                           <div class="panel-footer">
+                              {% if user.plan_id==1 %}
+                              <a href="#" class="btn btn-secondary disabled" role="button">Sign Up</a>
+                              {% else %}
+                              <a data-update_plan="{{ plans_available[0] }}" data-nplans_instance="{{n_plans_instance[0]}}" data-useinstance="{{user.get_instances()|length}}" data-id_plan="1" data-user_plan="{{ user.plan_id}}" data-id_user="{{ user.id }}" class="btn btn-success btn-updateplan" role="button">Sign Up</a>
+                              {% endif %}
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-xs-12 col-md-4">
+                        <div class="panel panel-success">
+                           <div class="cnrflash">
+                              <div class="cnrflash-inner">
+                                 <span class="cnrflash-label">MOST
+                                 <br>
+                                 POPULR</span>
+                              </div>
+                           </div>
+                           <div class="panel-heading">
+                              <h3 class="panel-title">
+                                 Basic
+                              </h3>
+                           </div>
+                           <div class="panel-body">
+                              <div class="the-price">
+                                 <h1>
+                                    <!--$20<span class="subscript">/mo</span>-->
+                                    ${{ plans_available[1] }}<span class="subscript">/mo</span>
+                                 </h1>
+                              </div>
+                              <table class="table">
+                                 <tr>
+                                    <td>
+                                       {{n_plans_instance[1]}} Instances
+                                    </td>
+                                 </tr>
+                                    <td>
+                                       Full API Access
+                                    </td>
+                                 </tr>
+                              </table>
+                           </div>
+                           <div class="panel-footer">                              
+                              {% if user.plan_id==2 %}
+                              <a href="#" class="btn btn-secondary disabled" role="button">Sign Up</a>
+                              {% else %}
+                              <a data-nplans_instance="{{n_plans_instance[1]}}" data-update_plan="{{ plans_available[1] }}" data-useinstance="{{user.get_instances()|length}}" data-id_user="{{ user.id }}" data-user_plan="{{ user.plan_id}}" data-id_plan="2" class="btn btn-success btn-updateplan" role="button">Sign Up</a>
+                              {% endif %}
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-xs-12 col-md-4">
+                        <div class="panel panel-info">
+                           <div class="panel-heading">
+                              <h3 class="panel-title">
+                                 Premium
+                              </h3>
+                           </div>
+                           <div class="panel-body">
+                              <div class="the-price">
+                                 <h1>
+                                    ${{ plans_available[2] }}<span class="subscript">/mo</span>
+                                 </h1>
+                              </div>
+                              <table class="table">
+                                 <tr>
+                                    <td>
+                                       &#8734; Instances
+                                    </td>
+                                 </tr>
+                                    <td>
+                                       Full API Access
+                                    </td>
+                                 </tr>
+                              </table>
+                           </div>
+                           <div class="panel-footer">
+                              {% if user.plan_id==3 %}
+                              <a href="#" class="btn btn-secondary disabled" role="button">Sign Up</a>
+                              {% else %}
+                              <a data-update_plan="{{ plans_available[2] }}" data-nplans_instance="{{n_plans_instance[2]}}" data-useinstance="{{user.get_instances()|length}}" data-id_plan="3" data-id_user="{{ user.id }}" data-user_plan="{{ user.plan_id}}" class="btn btn-success btn-updateplan" role="button">Sign Up</a>
+                              {% endif %}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" id="close_plans" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <!--<button type="button" class="btn btn-primary">Join our VIP plans</button> -->
+               </div>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>
+
